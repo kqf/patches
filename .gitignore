@@ -1,0 +1,31 @@
+# Data
+*.csv
+*.onnx
+*.mat
+*.txt
+*.json
+*.jpg
+*.onnx
+*.png
+*.png
+.datasets
+
+# Tools
+.git/
+.idea/
+**/__pycache__/
+.vscode/
+.mypy_cache/
+.DS_Store
+.python-version
+*.egg*
+.coverage
+.env
+lightning_logs
+*.pth
+*.ckpt
+
+# Include
+!requirements.txt
+*.mp4
+*.mkv
