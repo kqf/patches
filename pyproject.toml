@@ -1,0 +1,52 @@
+[tool.ruff]
+line-length = 79
+target-version = "py310"
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "lf"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+extend-select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    # "UP",  # pyupgrade
+    # "B",   # bugbear
+    # "C90", # mccabe
+    # "D",  # pydocstyle
+    # "ERA",  # eradicate
+]
+ignore = [
+    "E203",
+    # "W503",
+    # TODO: Fix me later
+    "E501",
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "patches"
+version = "0.0.1"
+description = "Playground"
+dependencies = []
+
+[tool.setuptools]
+packages = ["patches", "scripts"]
