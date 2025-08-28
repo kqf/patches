@@ -1,0 +1,14 @@
+click
+opencv-python
+dataclasses-json
+dacite
+albumentations
+torch
+pytorch-lightning
+numpy<2
+torchvision
+mlflow
+
+pre-commit
+kaggle
+pytest
