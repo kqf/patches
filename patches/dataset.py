@@ -267,7 +267,7 @@ class PatchesDataset(torch.utils.data.Dataset):
         oimage, annotation = patch.read()
         try:
             image, bbox = transform(oimage, annotation.bbox, self.pipeline)
-        except:
+        except TypeError:
             print("Failed at", idx)
-            image, bbox = transform(oimage, [0, 0, 1.0, 1.0], self.pipeline)
+            image, bbox = transform(oimage, (0, 0, 1.0, 1.0), self.pipeline)
         return image, bbox
