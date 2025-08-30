@@ -269,5 +269,5 @@ class PatchesDataset(torch.utils.data.Dataset):
             image, bbox = transform(oimage, annotation.bbox, self.pipeline)
         except:
             print("Failed at", idx)
-            image, bbox = transform(oimage, [0, 0, 1., 1.], self.pipeline)
+            image, bbox = transform(oimage, [0, 0, 1.0, 1.0], self.pipeline)
         return image, bbox
