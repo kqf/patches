@@ -1,10 +1,14 @@
 import cv2
+import pytest
 
 from patches.dataset import read_dataset
 from patches.plot import plot
 
 
-def dataset():
+@pytest.fixture
+def dataset(annotations, use_real=False):
+    if not use_real:
+        return read_dataset(annotations)
     return read_dataset(
         ".datasets/ground/VisDrone/VisDrone2019-DET-train/annotations.json"
     )
