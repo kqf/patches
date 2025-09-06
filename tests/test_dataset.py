@@ -1,7 +1,6 @@
 import cv2
 import pytest
 
-
 from patches.dataset import read_dataset
 from patches.plot import plot
 
