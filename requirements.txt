@@ -5,7 +5,6 @@ dacite
 albumentations
 torch
 pytorch-lightning
-numpy
 torchvision
 mlflow
 
