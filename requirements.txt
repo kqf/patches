@@ -5,7 +5,7 @@ dacite
 albumentations
 torch
 pytorch-lightning
-numpy==1.26.4
+nump
 torchvision
 mlflow
 
