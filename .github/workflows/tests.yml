@@ -24,7 +24,7 @@ jobs:
 
       - name: Run the tests
         run: |
-          PYTHONFAULTHANDLER=1  pytest -s tests/
+          pytest -s tests/
 
       - name: Run pre-commit checks
         uses: pre-commit/action@v3.0.1
