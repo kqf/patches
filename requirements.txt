@@ -3,7 +3,6 @@ opencv-python
 dataclasses-json
 dacite
 torch
-torchvision
 mlflow
 
 pre-commit
