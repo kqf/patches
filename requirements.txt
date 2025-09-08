@@ -2,7 +2,6 @@ click
 opencv-python
 dataclasses-json
 dacite
-albumentations
 torch
 torchvision
 mlflow
