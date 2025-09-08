@@ -4,8 +4,6 @@ dataclasses-json
 dacite
 albumentations
 torch
-pytorch-lightning
-numpy<2
 torchvision
 mlflow
 
