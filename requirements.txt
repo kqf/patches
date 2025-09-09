@@ -6,5 +6,4 @@ torch
 mlflow
 
 pre-commit
-kaggle
 pytest
