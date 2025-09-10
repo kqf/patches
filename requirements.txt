@@ -2,6 +2,7 @@ click
 opencv-python
 dataclasses-json
 dacite
+albumentations
 mlflow
 
 pre-commit
