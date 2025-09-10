@@ -3,6 +3,7 @@ opencv-python
 dataclasses-json
 dacite
 albumentations
+torch
 mlflow
 
 pre-commit
