@@ -2,7 +2,6 @@ import cv2
 import pytest
 
 from patches.dataset import read_dataset
-from patches.plot import plot
 
 
 @pytest.fixture
@@ -19,6 +18,6 @@ def test_dataset(dataset):
         image = cv2.imread(sample.file_name)
         if image is None:
             continue
-        cv2.imshow("frame", plot(image, sample.annotations))
+        # cv2.imshow("frame", plot(image, sample.annotations))
         # cv2.waitKey()
     print(len(dataset))
