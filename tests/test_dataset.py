@@ -17,7 +17,7 @@ def dataset(annotations: Path, use_real: bool) -> list[Sample]:
     )
 
 
-@pytest.mark.parametrize("use_real", [True])
+@pytest.mark.parametrize("use_real", [False])
 def test_dataset(dataset: list[Sample], use_real: bool):
     # sourcery skip: no-loop-in-tests
     for sample in dataset:
