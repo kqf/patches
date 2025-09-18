@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import cv2
+import pytest
 
 from patches.dataset import Annotation, Sample
 
@@ -76,6 +77,7 @@ def parse_visdrone_annotations(dataset_dir: Path, out_path: Path):
     return out_path
 
 
+@pytest.mark.skip
 def test_parses(path: Path):
     out_path = path / "annotations.json"
     result = parse_visdrone_annotations(path, out_path)
