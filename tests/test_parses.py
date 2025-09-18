@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-import click
 import cv2
 
 from patches.dataset import Annotation, Sample
@@ -36,7 +35,7 @@ def parse_visdrone_annotations(dataset_dir: Path, out_path: Path):
     samples: list[Sample] = []
 
     for ann_file in sorted(ann_dir.glob("*.txt")):
-        img_file = img_dir / (ann_file.stem + ".jpg")
+        img_file = img_dir / f"{ann_file.stem}.jpg"
         if not img_file.exists():
             continue
 
@@ -77,20 +76,7 @@ def parse_visdrone_annotations(dataset_dir: Path, out_path: Path):
     return out_path
 
 
-@click.command()
-@click.argument(
-    "path",
-    type=click.Path(
-        exists=True,
-        file_okay=False,
-        path_type=Path,
-    ),
-)
-def main(path: Path):
+def test_parses(path: Path):
     out_path = path / "annotations.json"
     result = parse_visdrone_annotations(path, out_path)
-    click.echo(f"Annotations saved to {result}")
-
-
-if __name__ == "__main__":
-    main()
+    print(f"Annotations saved to {result}")
