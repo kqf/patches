@@ -2,18 +2,21 @@ from collections import Counter
 from functools import partial
 
 import cv2
+import pytest
 
 from patches.augmentations import to_numpy, train, transform, valid
 from patches.dataset import Patch, read_patches_dataset
 from patches.plot import plot
 
 
-def patches() -> list[Patch]:
+@pytest.fixture
+def patches(use_real: bool) -> list[Patch]:
     return read_patches_dataset(
         ".datasets/ground/VisDrone/VisDrone2019-DET-train/clean-patches-train.json"  # noqa
     )
 
 
+@pytest.mark.parametrize("use_real", [False])
 def test_augments(patches: list[Patch]):
     augment = partial(
         transform,
