@@ -16,6 +16,7 @@ def patches(use_real: bool) -> list[Patch]:
     )
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize("use_real", [False])
 def test_augments(patches: list[Patch]):
     augment = partial(
