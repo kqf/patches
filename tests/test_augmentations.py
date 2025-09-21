@@ -11,12 +11,13 @@ from patches.plot import plot
 
 @pytest.fixture
 def patches(use_real: bool) -> list[Patch]:
-    return read_patches_dataset(
-        ".datasets/ground/VisDrone/VisDrone2019-DET-train/clean-patches-train.json"  # noqa
-    )
+    if use_real:
+        return read_patches_dataset(
+            ".datasets/ground/VisDrone/VisDrone2019-DET-train/clean-patches-train.json"  # noqa
+        )
+    return []
 
 
-@pytest.mark.skip
 @pytest.mark.parametrize("use_real", [False])
 def test_augments(patches: list[Patch]):
     augment = partial(
