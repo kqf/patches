@@ -29,9 +29,6 @@ def datapath(annotations: Path, use_real: bool) -> Path:
         ".datasets/ground/VisDrone/VisDrone2019-DET-train/annotations.json",
     )
 
-
-@pytest.mark.parametrize("use_real", [False])
-def test_splits(datapath: Path, use_real: bool):
     patches = to_patches_dataset(read_dataset(datapath))
     save_dataset(str(datapath.with_stem("clean-patches")), patches)
     train, valid = train_test_split(patches)
