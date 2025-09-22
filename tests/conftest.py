@@ -64,3 +64,19 @@ def annotations(
     with open(ofile, "w") as f:
         json.dump(example, f, indent=4)
     return ofile
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--use-real",
+        action="store_true",
+        default=None,
+        help="Force use_real=True in parametrized tests",
+    )
+
+
+def pytest_generate_tests(metafunc):
+    if "use_real" in metafunc.fixturenames:
+        cli_value = metafunc.config.getoption("--use-real")
+        if cli_value is not None:
+            metafunc.parametrize("use_real", [cli_value])
