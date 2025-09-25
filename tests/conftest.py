@@ -1,9 +1,32 @@
 import json
 import pathlib
+from pathlib import Path
 
 import cv2
 import numpy as np
 import pytest
+
+from patches.dataset import (
+    read_dataset,
+    save_dataset,
+    to_patches_dataset,
+)
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--use-real",
+        action="store_true",
+        default=None,
+        help="Force use_real=True in parametrized tests",
+    )
+
+
+def pytest_generate_tests(metafunc):
+    if "use_real" in metafunc.fixturenames:
+        cli_value = metafunc.config.getoption("--use-real")
+        if cli_value is not None:
+            metafunc.parametrize("use_real", [cli_value])
 
 
 @pytest.fixture
@@ -66,17 +89,15 @@ def annotations(
     return ofile
 
 
-def pytest_addoption(parser):
-    parser.addoption(
-        "--use-real",
-        action="store_true",
-        default=None,
-        help="Force use_real=True in parametrized tests",
+def train_valid_patches(annotations: Path) -> tuple[Path, Path]:
+    patches = to_patches_dataset(read_dataset(annotations))
+    train_labels = {
+        "person",
+        "truck",
+    }
+    train = [p for p in patches if p.label in train_labels]
+    valid = [p for p in patches if p.label not in train_labels]
+    return (
+        save_dataset(str(annotations.with_stem("clean-patches-train")), train),
+        save_dataset(str(annotations.with_stem("clean-patches-valid")), valid),
     )
-
-
-def pytest_generate_tests(metafunc):
-    if "use_real" in metafunc.fixturenames:
-        cli_value = metafunc.config.getoption("--use-real")
-        if cli_value is not None:
-            metafunc.parametrize("use_real", [cli_value])
