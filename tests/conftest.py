@@ -89,6 +89,7 @@ def annotations(
     return ofile
 
 
+@pytest.fixture
 def train_valid_patches(annotations: Path) -> tuple[Path, Path]:
     patches = to_patches_dataset(read_dataset(annotations))
     train_labels = {
