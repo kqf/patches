@@ -17,10 +17,11 @@ from patches.augmentations import transform
 RelativeXYXY = tuple[float, float, float, float]
 
 
-def save_dataset(out_path: str, samples: list) -> None:
+def save_dataset(out_path: str | Path, samples: list) -> str | Path:
     # Save to JSON using dataclasses_json
     with open(out_path, "w") as f:
         json.dump([s.to_dict() for s in samples], f, indent=2)
+    return out_path
 
 
 @dataclass_json
