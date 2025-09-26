@@ -3,10 +3,6 @@ from pathlib import Path
 from patches.train import main
 
 
-def patches_dataset(tmp_path: Path) -> Path:
-    return tmp_path / "patches.json"
-
-
 def test_trains(train_valid_patches: tuple[Path, Path]):
     train, valid = train_valid_patches
     main(
