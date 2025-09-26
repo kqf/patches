@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from patches.train import main
+from patches.train import Config, main
 
 
 def test_trains(train_valid_patches: tuple[Path, Path]):
@@ -9,4 +9,5 @@ def test_trains(train_valid_patches: tuple[Path, Path]):
         epochs=1,
         train_labels=str(train),
         valid_labels=str(valid),
+        config=Config(datapath=""),
     )
