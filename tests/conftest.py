@@ -52,14 +52,14 @@ def annotations(
                     "label": "car",
                     "score": 1.0,
                     "truncation": 0,
-                    "occlusion": 1,
+                    "occlusion": 0,
                 },
                 {
                     "bbox": [
-                        0.665625,
-                        0.787037,
-                        0.729166,
-                        0.872222,
+                        0.265625,
+                        0.387037,
+                        0.429166,
+                        0.572222,
                     ],
                     "landmarks": [],
                     "label": "person",
@@ -70,9 +70,9 @@ def annotations(
                 {
                     "bbox": [
                         0.61875,
-                        0.73888,
-                        0.68541,
-                        0.83333,
+                        0.23888,
+                        0.78541,
+                        0.33333,
                     ],
                     "landmarks": [],
                     "label": "car",
@@ -95,9 +95,11 @@ def train_valid_patches(annotations: Path) -> tuple[Path, Path]:
     train_labels = {
         "person",
         "truck",
+        "car",
     }
     train = [p for p in patches if p.label in train_labels]
     valid = [p for p in patches if p.label not in train_labels]
+    print(len(train), len(valid))
     return (
         save_dataset(str(annotations.with_stem("clean-patches-train")), train),
         save_dataset(str(annotations.with_stem("clean-patches-valid")), valid),
