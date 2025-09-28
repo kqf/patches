@@ -30,8 +30,9 @@ def main(
     resolution: tuple[int, int] = (128, 128),
     epochs: int = 10,
     batch_size=16,
+    config: Config | None = None,
 ) -> None:
-    config = Config()
+    config = config or Config()
     pl.trainer.seed_everything(137)  # type: ignore
     pipeline = LocalizationPipeline(
         train_labels=config.datapath + train_labels,

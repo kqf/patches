@@ -49,4 +49,4 @@ description = "Playground"
 dependencies = []
 
 [tool.setuptools]
-packages = ["patches", "scripts"]
+packages = ["patches"]
