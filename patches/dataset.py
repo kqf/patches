@@ -17,10 +17,11 @@ from patches.augmentations import transform
 RelativeXYXY = tuple[float, float, float, float]
 
 
-def save_dataset(out_path: str, samples: list) -> None:
+def save_dataset(out_path: str | Path, samples: list) -> Path:
     # Save to JSON using dataclasses_json
     with open(out_path, "w") as f:
         json.dump([s.to_dict() for s in samples], f, indent=2)
+    return Path(out_path)
 
 
 @dataclass_json
@@ -267,7 +268,7 @@ class PatchesDataset(torch.utils.data.Dataset):
         oimage, annotation = patch.read()
         try:
             image, bbox = transform(oimage, annotation.bbox, self.pipeline)
-        except:
+        except TypeError:
             print("Failed at", idx)
-            image, bbox = transform(oimage, [0, 0, 1., 1.], self.pipeline)
+            image, bbox = transform(oimage, (0, 0, 1.0, 1.0), self.pipeline)
         return image, bbox
