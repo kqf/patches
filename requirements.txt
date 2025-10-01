@@ -8,6 +8,7 @@ pytorch-lightning
 numpy==1.26.4
 torchvision
 mlflow
+onnx
 
 pre-commit
 kaggle
