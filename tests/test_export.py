@@ -2,7 +2,7 @@ from pathlib import Path
 
 import onnx
 
-from patches.export import export_to_onnx  # adjust this import
+from patches.export import export_to_onnx
 from patches.train import build_model
 
 
