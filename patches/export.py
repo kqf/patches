@@ -1,6 +1,8 @@
 from pathlib import Path
 
+import onnx
 import torch
+from onnxsim import simplify
 
 
 def export_to_onnx(
@@ -33,4 +35,9 @@ def export_to_onnx(
     if was_training:
         model.train()
 
+    # Simplify the ONNX model
+    simplified, check = simplify(onnx.load(str(output)))
+    if not check:
+        raise RuntimeError("Simplified ONNX model could not be simplified")
+    onnx.save(simplified, str(output))
     return output
