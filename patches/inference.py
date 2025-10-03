@@ -119,17 +119,13 @@ def plot_all(
     return frame
 
 
-def main(
-    iimage: str = "image.jpeg",
-    oimage: str = "predicted.jpeg",
-    checkpoint: str = "222.ckpt",
-):
-    frame = cv2.imread(iimage)
+def main():
+    frame = cv2.imread("image.jpeg")
     bbox = (20, 20, 50, 50)
-    predictor = build_inference(checkpoint, 120)
+    predictor = build_inference("222.ckpt", 120)
     frame, newbox, roi, locbox = infer(frame, bbox, predictor)
     frame = plot_all(frame, newbox, roi, locbox)
-    cv2.imwrite(oimage, frame)
+    cv2.imwrite("predicted.jpeg", frame)
     cv2.imshow("Prediction", frame)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
