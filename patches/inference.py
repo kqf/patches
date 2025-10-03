@@ -1,6 +1,6 @@
 from os import PathLike
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable
 
 import albumentations as alb
 import cv2
@@ -10,8 +10,8 @@ from albumentations.pytorch import ToTensorV2
 
 from patches.train import build_model
 
-XYWH = tuple[int, int, int, int]  # absolute coords
-XYXY = tuple[float, float, float, float]  # relative coords
+XYWH = tuple[int, int, int, int]
+XYXY = tuple[float, float, float, float]
 
 
 def test(resolution: tuple[int, int]) -> alb.Compose:
@@ -22,18 +22,15 @@ def test(resolution: tuple[int, int]) -> alb.Compose:
                 min_height=resolution[1],
                 border_mode=0,
             ),
-            alb.Resize(
-                width=resolution[0],
-                height=resolution[1],
-            ),
+            alb.Resize(width=resolution[0], height=resolution[1]),
             ToTensorV2(),
-        ],
+        ]
     )
 
 
-def load_state_dict(checkpiont: str | Path | PathLike) -> dict:
+def load_state_dict(checkpoint: str | Path | PathLike) -> dict:
     state_dict = torch.load(
-        checkpiont,
+        checkpoint,
         map_location=torch.device(
             "cuda" if torch.cuda.is_available() else "cpu"
         ),
@@ -43,11 +40,16 @@ def load_state_dict(checkpiont: str | Path | PathLike) -> dict:
     }
 
 
-def plot(image, bbox):
+def crop(frame: np.ndarray, bbox: XYWH) -> np.ndarray:
+    x, y, w, h = bbox
+    return frame[y : y + h, x : x + w]
+
+
+def plot(image: np.ndarray, bbox: XYXY) -> np.ndarray:
     h, w, _ = image.shape
     x_min, y_min, x_max, y_max = bbox
     return cv2.rectangle(
-        image,
+        image.copy(),
         (int(x_min * w), int(y_min * h)),
         (int(x_max * w), int(y_max * h)),
         color=(0, 255, 0),
@@ -56,27 +58,23 @@ def plot(image, bbox):
 
 
 def build_inference(
-    checkpoint: str | Path | PathLike,
-    size: int,
-) -> Callable[[np.ndarray], tuple[float, float, float, float]]:
+    checkpoint: str | Path | PathLike, size: int
+) -> Callable[[np.ndarray], XYXY]:
     transform = test(resolution=(size, size))
     model = build_model()
     model.load_state_dict(load_state_dict(checkpoint))
+    model.eval()
 
-    def run_inference(model: torch.nn.Module, batch: torch.Tensor):
-        batch = batch.unsqueeze(0)
-
-        batch = batch.to(
+    def run_inference(batch: torch.Tensor):
+        batch = batch.unsqueeze(0).to(
             dtype=torch.float32, device=next(model.parameters()).device
         )
-
-        model.eval()
         with torch.no_grad():
             return model(batch)
 
-    def infer(image: np.ndarray) -> tuple[float, float, float, float]:
+    def infer(image: np.ndarray) -> XYXY:
         batch = transform(image=image)["image"]
-        return run_inference(model, batch)[0].cpu().numpy()
+        return run_inference(batch)[0].cpu().numpy().tolist()
 
     return infer
 
@@ -91,48 +89,46 @@ def to_global(patch: XYXY, frame: XYWH) -> XYWH:
     return gx, gy, gw, gh
 
 
-def infer(frame: np.ndarray, bbox: XYWH, infer: Callable, size=120) -> XYWH:
-    # Crop first
+def infer(
+    frame: np.ndarray,
+    bbox: XYWH,
+    predictor: Callable,
+    size=120,
+) -> tuple:
     roi = crop(frame, bbox)
-
-    # Crop and resize the expanded region
     roi_resized = cv2.resize(roi, (size, size))
-
-    # Run inference
-    local_bbox = infer(roi_resized)
-
-    global_bbox = to_global(.local_bbox, bbox_roi)
+    local_bbox = predictor(roi_resized)
+    global_bbox = to_global(local_bbox, bbox)
     return frame, global_bbox, roi_resized, local_bbox
 
 
-def plot_all(frame: np.ndarray, bbox: XYWH, roi_resized: np.ndarray, local_bbox: XYWH) -> np.ndarray:
+def plot_all(
+    frame: np.ndarray,
+    bbox: XYWH,
+    roi_resized: np.ndarray,
+    local_bbox: XYXY,
+) -> np.ndarray:
+    x, y, w, h = bbox
+    frame = cv2.rectangle(frame.copy(), (x, y), (x + w, y + h), (255, 0, 0), 2)
     vis = plot(roi_resized, local_bbox)
-
-    # Add plotted patch in the bottom right corner of the image
     h_patch, w_patch = vis.shape[:2]
     h_frame, w_frame = frame.shape[:2]
-
-    # Calculate position for the patch (bottom right)
     x_offset = w_frame - w_patch
     y_offset = h_frame - h_patch
-
-    # Overlay the patch
-    frame[y_offset : y_offset + h_patch, x_offset : x_offset + w_patch] = (
-        vis
-    )
+    frame[y_offset : y_offset + h_patch, x_offset : x_offset + w_patch] = vis
     return frame
 
 
-def main()
+def main():
     frame = cv2.imread("image.jpeg")
     bbox = (20, 20, 50, 50)
-    predict = build_inference('222.ckpt', 120)
-    frame, newbox, roi, locbox = infer(frame, bbox, predict)
+    predictor = build_inference("222.ckpt", 120)
+    frame, newbox, roi, locbox = infer(frame, bbox, predictor)
     frame = plot_all(frame, newbox, roi, locbox)
-    # Plot original bbox with differnt color
     cv2.imwrite("predicted.jpeg", frame)
-    cv2.imshow()
-    cv2.waitKey()
+    cv2.imshow("Prediction", frame)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
