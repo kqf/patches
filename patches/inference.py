@@ -62,7 +62,8 @@ def build_inference(
 ) -> Callable[[np.ndarray], XYXY]:
     transform = test(resolution=(size, size))
     model = build_model()
-    model.load_state_dict(load_state_dict(checkpoint))
+    if checkpoint:
+        model.load_state_dict(load_state_dict(checkpoint))
     model.eval()
 
     def run_inference(batch: torch.Tensor):
