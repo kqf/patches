@@ -20,5 +20,6 @@ def frame(use_real: bool, tmp_path: Path) -> str:
     return output
 
 
+@pytest.mark.parametrize("use_real", [False])
 def test_inferences(frame):
-    main()
+    main(iimage=frame)
