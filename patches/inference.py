@@ -124,6 +124,7 @@ def main(
     iimage: str = "image.jpeg",
     oimage: str = "predicted.jpeg",
     checkpoint: str = "222.ckpt",
+    visualize: bool = True,
 ):
     frame = cv2.imread(iimage)
     bbox = (20, 20, 50, 50)
@@ -131,9 +132,11 @@ def main(
     frame, newbox, roi, locbox = infer(frame, bbox, predictor)
     frame = plot_all(frame, newbox, roi, locbox)
     cv2.imwrite(oimage, frame)
-    # cv2.imshow("Prediction", frame)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+
+    if visualize:
+        cv2.imshow("Prediction", frame)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
