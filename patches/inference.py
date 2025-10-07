@@ -121,13 +121,13 @@ def plot_all(
 
 
 def main(
-    iimage: str = "image.jpeg",
+    iimage: str = "debug.jpg",
     oimage: str = "predicted.jpeg",
-    checkpoint: str = "222.ckpt",
+    checkpoint: str = "model.ckpt",
     visualize: bool = True,
 ):
     frame = cv2.imread(iimage)
-    bbox = (20, 20, 50, 50)
+    bbox = (705, 154, 40, 40)
     predictor = build_inference(checkpoint, 120)
     frame, newbox, roi, locbox = infer(frame, bbox, predictor)
     frame = plot_all(frame, newbox, roi, locbox)
