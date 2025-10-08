@@ -127,7 +127,7 @@ def main(
     visualize: bool = True,
 ):
     frame = cv2.imread(iimage)
-    bbox = (705, 154, 40, 40)
+    bbox = (0, 0, 40, 40)
     predictor = build_inference(checkpoint, 120)
     frame, newbox, roi, locbox = infer(frame, bbox, predictor)
     frame = plot_all(frame, newbox, roi, locbox)
