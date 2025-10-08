@@ -1,11 +1,16 @@
-basepath = .datasets/ground/VisDrone
+model = model1
 
-$(basepath)/VisDrone2019-DET-train/annotations.json: $(basepath)/VisDrone2019-DET-train
-	pytest -s tests/test_parses_visdrone.py --use-real
-	cp $(basepath)/VisDrone2019-DET-train/VisDrone2019-DET-train/annotations.json $@
+all: run.bin $(model).onnx
+	echo "Running the script"
+	./run.bin $(model).onnx
 
-$(basepath)/VisDrone2019-DET-train: $(basepath)
-	unzip $(basepath)/visdrone-dataset.zip -d $(basepath)
+run.bin: infer.cpp $(model).onnx
+	g++ -o run.bin infer.cpp `pkg-config --cflags --libs opencv4` -std=c++11
 
-$(basepath):
-	@kaggle datasets download kushagrapandya/visdrone-dataset -p $@
+%.onnx:
+	cp ../$@ .
+
+clean:
+	rm -rf $(model).onnx
+
+.PRECIOUS: *.onnx
